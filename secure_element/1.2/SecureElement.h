@@ -37,7 +37,7 @@ using ::android::hardware::secure_element::V1_2::ISecureElement;
 
 
 struct SecureElement : public ISecureElement , public hidl_death_recipient {
-    SecureElement();
+    SecureElement(const char* configFile_name);
     Return<void> init(const sp<V1_0::ISecureElementHalCallback>& clientCallback) override;
     Return<void> init_1_1(const sp<V1_1::ISecureElementHalCallback>& clientCallback) override;
     Return<void> openLogicalChannel(const hidl_vec<uint8_t>& aid, uint8_t p2, openLogicalChannel_cb _hidl_cb) override;
@@ -56,6 +56,7 @@ struct SecureElement : public ISecureElement , public hidl_death_recipient {
     bool turnOffSE = true;
     uint8_t atr[32];
     uint8_t atr_size;
+    char config_filename[100];
     static sp<V1_0::ISecureElementHalCallback> internalClientCallback;
     static sp<V1_1::ISecureElementHalCallback> internalClientCallback_v1_1;
     int initializeSE();

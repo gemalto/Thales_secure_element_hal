@@ -49,9 +49,11 @@ namespace implementation {
 
 static struct se_gto_ctx *ctx;
 
-SecureElement::SecureElement(){
+SecureElement::SecureElement(const char* configFile_name){
     nbrOpenChannel = 0;
     ctx = NULL;
+
+    strcpy( config_filename, configFile_name);
 }
 
 int SecureElement::resetSE(){
@@ -612,22 +614,21 @@ SecureElement::openConfigFile(int verbose)
 {
     int   r;
     FILE *f;
-    char filename[] = "/vendor/etc/libse-gto-hal.conf";
 
     /* filename is not NULL */
-    ALOGD("SecureElement:%s Open Config file : %s", __func__, filename);
-    f = fopen(filename, "r");
+    ALOGD("SecureElement:%s Open Config file : %s", __func__, config_filename);
+    f = fopen(config_filename, "r");
     if (f) {
         r = parseConfigFile(f, verbose);
         if (r == -1)
-            perror(filename);
-            ALOGE("SecureElement:%s Error parse %s Failed", __func__, filename);
+            perror(config_filename);
+            ALOGE("SecureElement:%s Error parse %s Failed", __func__, config_filename);
         if (fclose(f) != 0)
             r = -1;
-            ALOGE("SecureElement:%s Error close %s Failed", __func__, filename);
+            ALOGE("SecureElement:%s Error close %s Failed", __func__, config_filename);
     } else {
         r = -1;
-        ALOGE("SecureElement:%s Error open %s Failed", __func__, filename);
+        ALOGE("SecureElement:%s Error open %s Failed", __func__, config_filename);
     }
     return r;
 }
@@ -686,7 +687,6 @@ SecureElement::reset() {
     if(initializeSE() == EXIT_SUCCESS) {
         status = SecureElementStatus::SUCCESS;
     }
-	
     ALOGD("SecureElement:%s end", __func__);
 
     return status;

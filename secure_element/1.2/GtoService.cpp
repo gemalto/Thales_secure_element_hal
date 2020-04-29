@@ -28,8 +28,8 @@ using android::status_t;
 int main() {
   ALOGD("android::hardware::secure_element::V1_2 is starting.");
   ALOGD("Thales Secure Element HAL Service Release 1.2.2 ==> libse-gto v1.11");
-  sp<ISecureElement> se_service = new SecureElement();
-  //sp<ISecureElement> se_service2 = new SecureElement();
+  sp<ISecureElement> se_service = new SecureElement("/vendor/etc/libse-gto-hal.conf");
+  sp<ISecureElement> se_service2 = new SecureElement("/vendor/etc/libse-gto-hal2.conf");
   configureRpcThreadpool(1, true);
   status_t status = se_service->registerAsService("eSE1");
   if (status != OK) {
@@ -39,13 +39,13 @@ int main() {
     return -1;
   }
 
-  /*status_t status = se_service2->registerAsService("eSE2");
+  status = se_service2->registerAsService("eSE2");
   if (status != OK) {
     LOG_ALWAYS_FATAL(
         "registerAsService2 (%d).",
         status);
     return -1;
-  }*/
+  }
   
   ALOGD("Thales Secure Element Service is ready");
   joinRpcThreadpool();
